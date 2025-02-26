@@ -1,0 +1,96 @@
+Women Safety ReactJS App
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Just landing page
+2 emergency contacts
+they hardcoded the emergency contacts
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Project Time:
+1 WEEK
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+features:
+> Trusted Contacts Update  :  Allow users to edit emergency contacts instead of hardcoding them.
+> location tracking
+> automatic message
+> automatic call
+> //ignore : fake incoming call (button)
+> Community Reports (Unsafe Areas Map)  :  rating unsafe locations and displaying
+> alert users in advance if they are going in unsafe locations using Community Reports.
+> Automatic Audio/Video Recording  : When SOS is activated, the app can start recording audio or video as evidence and upload it to Firebase.
+> Background Monitoring Mode  : Allow the app to run in the background and send alerts if the user shakes the phone or if there's sudden movement.
+> Offline Mode (Send SOS Without Internet)  : Use SMS fallback to send emergency alerts even without an internet connection.
+> Nearby Safe Zones  : Show police stations, hospitals, or safe zones nearby based on the user’s location.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+3rd party:
+
+✅ Google Maps API → For location tracking, unsafe area rating
+✅ Twilio API → For SMS & calling without a network
+✅ Firebase Authentication → To allow users to securely log in
+✅ Firebase Firestore → Store user locations, alerts, reports
+✅ Firebase Cloud Messaging (FCM) → Send SOS notifications
+✅ Local Storage (Shared Preferences) → Store settings & emergency contacts
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+26|02|2025  Planning:
+
+1. Project Components
+	
+	1. Authentication -
+		Login
+		Signup
+		
+		emergency -> website(shortcut) -> button presses -> automatic message, call.. should done with her emergency-contacts(firebase)
+		
+		firestore -> 
+		
+		Shared Preference -> mobile storage() 
+		
+		signup: email -> Shared Preference
+		
+		when she opens website and presses the emergency trigger button, it fetches email from shared preference and and it does firestore api call
+		and retrives emailid document's field info
+		and next task takes place(dialing, message sending..)
+
+2. UI/UX designing in Figma
+
+3. ui => buttons.
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+ASK SOHAN
+
+find unsafe locations near me: 5km radius logic
+how did we figure out when clicked on location icon,it goes to google maps.
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SKILL SETS:
+
+1. Know what is api. (reverse geocoding)
+2. firebase : firestore, auth, FCM, 
+3. navigator.geolocation
+4. call:tell:   URI scheme to open the phone dialer with the emergency contact pre-filled.
+5. message:  mailto:
+6. Website Hosting: Firebase Hosting
+
+
+
+
+
