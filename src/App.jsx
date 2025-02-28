@@ -1,8 +1,10 @@
 import "./App.css";
 import buttonStyles from "./Components/buttons/ButtonStyles";
+import Add_Emergency_Contacts from "./components/Pages/Add_Emergency_Contacts";
 import Edit_Page from "./components/Pages/Edit_Page";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Emergency from "./components/Pages/Emergency";
 
 function Home() {
   const navigate = useNavigate(); // 🔹 FIX: Define navigate inside the component
@@ -21,7 +23,7 @@ function Home() {
       </div>
 
       <div className="flex items-center justify-center h-screen">
-        <button onClick={() => {}} className={buttonStyles.emergencyButton}>
+        <button onClick={() => {navigate("/Emergency")}} className={buttonStyles.emergencyButton}>
           EMERGENCY
         </button>
       </div>
@@ -51,8 +53,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} /> {/* Main Page */}
-          <Route path="/EditContacts" element={<Edit_Page />} />{" "}
+          <Route path="/EditContacts" element={<Edit_Page />} />
           {/* Edit Contacts Page */}
+          <Route path="/Add_Emergency_Contacts" element={<Add_Emergency_Contacts />} />
+          <Route path="/Emergency" element={<Emergency/>} />
         </Routes>
       </Router>
     </>
