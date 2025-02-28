@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import buttonStyles from '../buttons/ButtonStyles';
 
 const Emergency = () => {
 
@@ -15,12 +14,11 @@ const Emergency = () => {
       
       {/* Display Saved Contacts */}
       <div className="mt-20 ml-140 text-center absolute">
-        <h2 className="text-3xl font-bold mb-4">Saved Emergency Contacts</h2>
         <ul className="text-xl">
           {emergencyContacts.length > 0 ? (
             emergencyContacts.map((contact, index) => (
               <li key={index} className="mb-2">
-                <button className={buttonStyles.emergencyButton}><strong>{contact.name}</strong></button>
+                <button className='focus:outline-none text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-1xl px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'><strong>{contact.name}</strong></button>
               </li>
             ))
           ) : (
