@@ -9,6 +9,14 @@ export const getContacts = () => {
   return JSON.parse(localStorage.getItem("contacts")) || [];
 };
 
+export const updateContact = (oldPhoneNumber, updatedContact) => {
+  let contacts = getContacts();
+  contacts = contacts.map(contact => 
+    contact.phoneNumber === oldPhoneNumber ? updatedContact : contact
+  );
+  localStorage.setItem("contacts", JSON.stringify(contacts));
+};
+
 export const deleteContact = (phoneNumber) => {
   let contacts = getContacts();
   contacts = contacts.filter(contact => contact.phoneNumber !== phoneNumber);

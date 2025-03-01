@@ -2,7 +2,8 @@ import "./App.css";
 import buttonStyles from "./components/buttons/ButtonStyles";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 import EditContacts from "./components/pages/edit-contacts/EditContacts";
-import AddContact from "./components/pages/add-contact/AddContact.jsx"
+import AddContactForm from "./components/pages/add-contact/AddContactForm.jsx";
+import EditContactCard from "./components/pages/edit-contacts/EditContactCard.jsx";
 
 function Home() {
   const navigate = useNavigate(); // 🔹 FIX: Define navigate inside the component
@@ -43,7 +44,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} /> {/* Main Page */}
         <Route path="/EditContacts" element={<EditContacts />} /> {/* Edit Contacts Page */}
-        <Route path="/AddContact" element={<AddContact />} />
+        <Route path="/AddContactForm" element={<AddContactForm />} />
+        <Route path="/EditContactCard" element={<EditContactCard />} />
       </Routes>
     </Router>
   );
