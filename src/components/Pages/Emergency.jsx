@@ -12,20 +12,21 @@ const Emergency = () => {
   return (
     <div>
       
-      {/* Display Saved Contacts */}
-      <div className="mt-20 ml-140 text-center absolute">
-        <ul className="text-xl">
-          {emergencyContacts.length > 0 ? (
-            emergencyContacts.map((contact, index) => (
-              <li key={index} className="mb-2">
-                <button className='focus:outline-none text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-1xl px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'><strong>{contact.name}</strong></button>
-              </li>
-            ))
-          ) : (
-            <p>No contacts saved yet.</p>
-          )}
-        </ul>
-       </div>  
+      <div className="mt-10 flex flex-col items-center space-y-4">
+      {emergencyContacts.length > 0 ? (
+        emergencyContacts.map((contact, index) => (
+          <div
+            key={index}
+            className="bg-white shadow-lg rounded-lg p-4 w-80 text-center"
+          >
+            <h3 className="text-xl font-bold">{contact.name}</h3>
+            <p className="text-gray-600">{contact.phone}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500 text-lg">No contacts saved yet.</p>
+      )}
+    </div>
 
     </div>
   )

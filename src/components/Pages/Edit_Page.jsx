@@ -112,37 +112,33 @@ function Edit_Page() {
       </div>
       
 
-      {/* <div className="absolute w-full  gap-4 p-6">
-        <button
-          onClick={() => {navigate("/Add_Emergency_Contacts")}} className="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-2xl px-10 py-5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-          Add Emergency Contacts
-        </button>
-      </div> */}
-
       {/* Display Saved Contacts */}
-      <div className="mt-50 ml-160 text-center absolute">
-        <ul className="text-xl">
-          {emergencyContacts.length > 0 ? (
-            emergencyContacts.map((contact, index) => (
-              <li key={index} className="mb-2">
-                {editingContact === index ? (
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="border p-2 rounded"
-                      placeholder="Name"
-                    />
-                    <input
-                      type="text"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="border p-2 rounded"
-                      placeholder="Phone"
-                    />
+      <div className="mt-10 flex flex-col items-center space-y-4">
+        {emergencyContacts.length > 0 ? (
+          emergencyContacts.map((contact, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-lg rounded-lg p-4 w-80 text-center"
+            >
+              {editingContact === index ? (
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="border p-2 w-full rounded"
+                    placeholder="Name"
+                  />
+                  <input
+                    type="text"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="border p-2 w-full rounded"
+                    placeholder="Phone"
+                  />
+                  <div className="flex justify-center space-x-2">
                     <button
                       onClick={handleSave}
                       className="px-3 py-1 bg-green-500 text-white rounded"
@@ -153,14 +149,15 @@ function Edit_Page() {
                       onClick={handleDiscard}
                       className="px-3 py-1 bg-red-500 text-white rounded"
                     >
-                      Discard Changes
+                      Discard
                     </button>
                   </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <button className='text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg px-4 py-2'>
-                      <strong>{contact.name}</strong>
-                    </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold">{contact.name}</h3>
+                  <p className="text-gray-600">{contact.phone}</p>
+                  <div className="flex justify-center space-x-2">
                     <button
                       onClick={() => handleEdit(index)}
                       className="px-3 py-1 bg-blue-500 text-white rounded"
@@ -174,14 +171,16 @@ function Edit_Page() {
                       Delete
                     </button>
                   </div>
-                )}
-              </li>
-            ))
-          ) : (
-            <p>No contacts saved yet.</p>
-          )}
-        </ul>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500 text-lg">No contacts saved yet.</p>
+        )}
       </div>
+
+
 
     </div>
       
