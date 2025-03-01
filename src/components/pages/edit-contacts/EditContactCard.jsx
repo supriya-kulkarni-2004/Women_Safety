@@ -1,96 +1,94 @@
-import React, { useEffect, useState } from "react";
-import { getContacts, updateContact, deleteContact } from "../../utility/StorageService";
-import buttonStyles from "../../buttons/ButtonStyles";
-import AddContactForm from "../add-contact/AddContactForm";
-import EditContactCard from "./EditContactCard";
+import React, { useState, useEffect } from "react";
+import { saveContact, updateContact, deleteContact, getContacts } from "../../utility/StorageService";
 
-function EditContacts() {
-  const [contacts, setContacts] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingContact, setEditingContact] = useState(null);
+function EditContactCard({ contact, onClose, onUpdate }) {
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const isEditing = !!contact;
 
+  // Set initial values when editing
   useEffect(() => {
-    setContacts(getContacts() || []);
-  }, []);
+    if (contact) {
+      setName(contact.name);
+      setPhoneNumber(contact.phoneNumber);
+    }
+  }, [contact]);
 
-  const refreshContacts = () => {
-    setContacts(getContacts());
+  // Save or update contact with duplicate check
+  const handleSave = () => {
+    if (!name || !phoneNumber) {
+      alert("Please fill out both fields.");
+      return;
+    }
+
+    // Retrieve existing contacts from storage
+    const existingContacts = getContacts() || [];
+
+    // Check if the updated phone number already exists (excluding the current contact being edited)
+    const isDuplicate = existingContacts.some(
+      (c) => c.phoneNumber === phoneNumber && c.phoneNumber !== contact.phoneNumber
+    );
+
+    if (isDuplicate) {
+      alert("Phone number already exists!");
+      return; // Stop execution
+    }
+
+    const updatedContact = { name, phoneNumber };
+    updateContact(contact.phoneNumber, updatedContact);
+    alert("Contact updated successfully!");
+    
+    onUpdate(); // Refresh contact list
+    onClose();
   };
 
-  const handleEdit = (contact) => {
-    setEditingContact(contact);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingContact(null);
-  };
-
-  const handleDelete = (phoneNumber) => {
-    const confirmDelete = window.confirm("Do you want to delete this contact?");
-    if (confirmDelete) {
-      deleteContact(phoneNumber);
+  // Handle deleting a contact
+  const handleDelete = () => {
+    if (isEditing && window.confirm("Are you sure you want to delete this contact?")) {
+      deleteContact(contact.phoneNumber);
       alert("Contact deleted successfully!");
-      refreshContacts();
+      onUpdate();
+      onClose();
     }
   };
 
   return (
-    <>
-      <div className="p-6 flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold">Edit Contacts</h2>
-        <button
-          className={buttonStyles.editEmergencyContacts}
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? "Close" : "Add Contact"}
-        </button>
-      </div>
+    <div className="flex justify-center p-4">
+      <div className="p-5 flex flex-col gap-4 border rounded-lg shadow-lg max-w-md mx-auto">
+        {/* Input Fields */}
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border p-2 w-full rounded-lg"
+        />
+        <input
+          type="tel"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className="border p-2 w-full rounded-lg"
+          pattern="[0-9]{10}"
+          maxLength="10"
+          required
+        />
 
-      {showForm && <AddContactForm onClose={() => setShowForm(false)} onUpdate={refreshContacts} />}
-
-      {contacts.length > 0 ? (
-        <div className="p-4 flex flex-col gap-4">
-          {contacts.map((contact) =>
-            editingContact?.phoneNumber === contact.phoneNumber ? (
-              // Render `EditContactCard` separately, avoiding shadow
-              <EditContactCard
-                key={contact.phoneNumber}
-                contact={editingContact}
-                onClose={handleCloseEdit}
-                onUpdate={refreshContacts}
-              />
-            ) : (
-              // Normal Contact Card with shadow
-              <div key={contact.phoneNumber} className="p-4 rounded-lg shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="p-4 border rounded-lg">
-                    <h3 className="text-lg font-semibold">{contact.name}</h3>
-                    <p className="text-gray-600">{contact.phoneNumber}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <button
-                      className="bg-blue-500 text-white p-2 rounded-lg"
-                      onClick={() => handleEdit(contact)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="bg-red-500 text-white p-2 rounded-lg"
-                      onClick={() => handleDelete(contact.phoneNumber)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
+        {/* Buttons */}
+        <div className="flex justify-end w-full gap-4">
+          <button onClick={handleSave} className="bg-blue-500 text-white p-2 rounded-lg">
+            Save
+          </button>
+          <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded-lg">
+            Delete
+          </button>
+          <button onClick={onClose} className="bg-gray-500 text-white p-2 rounded-lg">
+            Discard Changes
+          </button>
         </div>
-      ) : (
-        <p className="text-gray-500 p-4">No contacts available.</p>
-      )}
-    </>
+      </div>
+    </div>
   );
 }
 
-export default EditContacts;
+export default EditContactCard;
