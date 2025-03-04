@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Edit_Page() {
-
+  const navigate = useNavigate();
   const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [editingContact, setEditingContact] = useState(null);
   const [formData, setFormData] = useState({ name: "", phone: "" });
@@ -18,10 +19,27 @@ function Edit_Page() {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "phone" && !/^\d{0,10}$/.test(value)) return; // Allow only numbers and max 10 digits
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSave = () => {
+    if (!formData.name.trim() || !formData.phone.trim()) {
+      alert("Please fill out all fields before saving.");
+      return;
+    }
+
+    if (formData.phone.length !== 10) {
+      alert("Phone number must be exactly 10 digits.");
+      return;
+    }
+
+    if (emergencyContacts.some((contact, index) => index !== editingContact && contact.phone === formData.phone)) {
+      alert("This phone number is already in the contact list.");
+      return;
+    }
+
     let updatedContacts = [...emergencyContacts];
 
     if (editingContact !== null) {
@@ -36,98 +54,106 @@ function Edit_Page() {
     setEditingContact(null);
     setAddingContact(false);
     setFormData({ name: "", phone: "" });
+    alert("Contact Saved Successfully");
   };
 
   const handleDiscard = () => {
+    if (formData.name || formData.phone) {
+      if (!confirm("You have unsaved changes. Do you really want to discard?")) {
+        return;
+      }
+    }
     setEditingContact(null);
     setAddingContact(false);
-    setFormData({ name: '', phone: '' });
+    setFormData({ name: "", phone: "" });
   };
 
   const handleDelete = (index) => {
     if (confirm("Are you sure you want to delete this contact?")) {
       const updatedContacts = emergencyContacts.filter((_, i) => i !== index);
       setEmergencyContacts(updatedContacts);
-      localStorage.setItem('contacts', JSON.stringify(updatedContacts));
+      localStorage.setItem("contacts", JSON.stringify(updatedContacts));
     }
   };
 
-
   return (
-    <div>
-      
-      <div className="relative w-full flex justify-between p-6">
-        <button
-          onClick={() => {}} className=" absolute focus:outline-none text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-2xl px-8 py-4 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 absolute top-0 left-0 m-4"
+    <div className="p-4 md:p-8">
+      {/* Header Section */}
+      <div className="flex justify-between items-center w-full gap-2 md:gap-4">
+        <p
+          className="font-bold text-lg cursor-pointer whitespace-nowrap"
+          onClick={() => navigate(-1)}
         >
+          Back
+        </p>
+
+        <p className="font-bold text-lg text-center flex-1 min-w-0 break-words leading-tight">
           Edit Emergency Contacts
-        </button>
+        </p>
 
         <button
-            onClick={() => setAddingContact(!addingContact)}
-            className="absolute focus:outline-none text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-2xl px-8 py-4 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 absolute top-0 right-0 m-4"
-          >
-            {addingContact ? "CLOSE" : "Add Emergency Contacts"}
-          </button>
-
+          onClick={() => setAddingContact(!addingContact)}
+          className="text-white bg-red-700 hover:bg-red-800 font-bold rounded-lg text-lg px-4 py-2 md:px-6 md:py-3 whitespace-nowrap"
+        >
+          {addingContact ? "CLOSE" : "Add Contact"}
+        </button>
       </div>
 
-      <div>
 
-        {/* Add Contact Form - Appears when addingContact is true */}
-        {addingContact && (
-          <div className="mt-12 mb-6 flex flex-col items-center space-y-2 border p-4 rounded-lg bg-gray-100 w-80 mx-auto">
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              placeholder="Name"
-            />
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="border p-2 rounded w-full"
-              placeholder="Phone"
-            />
-            <div className="flex space-x-2">
-              <button
-                onClick={handleSave}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleDiscard}
-                className="px-4 py-2 bg-red-500 text-white rounded"
-              >
-                Discard
-              </button>
-            </div>
+
+
+      {/* Add Contact Form */}
+      {addingContact && (
+        <div className="w-full max-w-md mx-auto bg-gray-100 p-4 rounded-lg shadow-lg">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="border p-2 w-full rounded mb-2"
+            placeholder="Name"
+          />
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className="border p-2 w-full rounded mb-2"
+            placeholder="Phone"
+          />
+          <div className="flex justify-between">
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 bg-green-500 text-white rounded"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleDiscard}
+              className="px-4 py-2 bg-red-500 text-white rounded"
+            >
+              Discard
+            </button>
           </div>
-        )}
-      </div>
-      
+        </div>
+      )}
 
-      {/* Display Saved Contacts */}
-      <div className="mt-10 flex flex-col items-center space-y-4">
+      {/* Contact List - Responsive Stacked Layout */}
+      <div className="mt-6 flex flex-col items-center space-y-4 w-full">
         {emergencyContacts.length > 0 ? (
           emergencyContacts.map((contact, index) => (
             <div
               key={index}
-              className="bg-white shadow-lg rounded-lg p-4 w-80 text-center"
+              className="w-full max-w-md bg-white shadow-lg rounded-lg p-4 text-center"
             >
               {editingContact === index ? (
-                <div className="space-y-2">
+                <div>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="border p-2 w-full rounded"
+                    className="border p-2 w-full rounded mb-2"
                     placeholder="Name"
                   />
                   <input
@@ -135,29 +161,29 @@ function Edit_Page() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="border p-2 w-full rounded"
+                    className="border p-2 w-full rounded mb-2"
                     placeholder="Phone"
                   />
-                  <div className="flex justify-center space-x-2">
+                  <div className="flex justify-between">
                     <button
                       onClick={handleSave}
-                      className="px-3 py-1 bg-green-500 text-white rounded"
+                      className="px-4 py-2 bg-green-500 text-white rounded"
                     >
                       Save
                     </button>
                     <button
                       onClick={handleDiscard}
-                      className="px-3 py-1 bg-red-500 text-white rounded"
+                      className="px-4 py-2 bg-red-500 text-white rounded"
                     >
                       Discard
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div>
                   <h3 className="text-xl font-bold">{contact.name}</h3>
                   <p className="text-gray-600">{contact.phone}</p>
-                  <div className="flex justify-center space-x-2">
+                  <div className="flex justify-between mt-2">
                     <button
                       onClick={() => handleEdit(index)}
                       className="px-3 py-1 bg-blue-500 text-white rounded"
@@ -179,13 +205,8 @@ function Edit_Page() {
           <p className="text-gray-500 text-lg">No contacts saved yet.</p>
         )}
       </div>
-
-
-
     </div>
-      
-  
-  )
+  );
 }
 
-export default Edit_Page
+export default Edit_Page;
